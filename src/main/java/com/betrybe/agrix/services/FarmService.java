@@ -27,4 +27,8 @@ public class FarmService {
     return farmRepository.findAll();
   }
 
+  public <Optional> Farm findById(Integer id) {
+    return farmRepository.findById(id).orElse(null);
+  }
+
 }

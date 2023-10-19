@@ -5,8 +5,10 @@ import com.betrybe.agrix.dtos.FarmResponseDto;
 import com.betrybe.agrix.models.entities.Farm;
 import com.betrybe.agrix.services.FarmService;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,4 +47,20 @@ public class FarmController {
         .map(FarmResponseDto::fromFarm)
         .toList();
   }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> findById(@PathVariable("id") Integer id)  {
+    try {
+      Farm farm = farmService.findById(id);
+      if (farm != null) {
+        return ResponseEntity.ok(FarmResponseDto.fromFarm(farm));
+      } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body("Fazenda não encontrada!");
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Erro interno ao buscar a fazenda");
+    }
+}
 }
