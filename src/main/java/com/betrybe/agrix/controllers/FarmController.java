@@ -5,6 +5,7 @@ import com.betrybe.agrix.dtos.FarmResponseDto;
 import com.betrybe.agrix.models.entities.Farm;
 import com.betrybe.agrix.services.FarmService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,26 +42,25 @@ public class FarmController {
    * This method finds all farms.
    */
   @GetMapping
-  public List<FarmResponseDto> findAll() {
-    List<Farm> farms = farmService.findAll();
-    return farms.stream()
-        .map(FarmResponseDto::fromFarm)
-        .toList();
+  public List<Farm> findAll() {
+    return farmService.findAll();
   }
 
+  /**
+   * This method finds a farm by id.
+   */
   @GetMapping("/{id}")
-  public ResponseEntity<?> findById(@PathVariable("id") Integer id)  {
-    try {
-      Farm farm = farmService.findById(id);
-      if (farm != null) {
-        return ResponseEntity.ok(FarmResponseDto.fromFarm(farm));
-      } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body("Fazenda não encontrada!");
-      }
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("Erro interno ao buscar a fazenda");
+  public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
+    Optional<Farm> farmOptional = farmService.findById(id);
+    if (farmOptional.isPresent()) {
+      Farm farm = farmOptional.get();  // Obtém o objeto Farm do Optional
+      FarmResponseDto farmResponseDto = FarmResponseDto.fromFarm(farm);
+      return ResponseEntity.ok(farmResponseDto);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("Fazenda não encontrada!");
     }
-}
+  }
+
+
 }
