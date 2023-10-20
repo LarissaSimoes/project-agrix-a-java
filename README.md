@@ -37,7 +37,7 @@ O projeto Agrix utiliza as seguintes tecnologias e frameworks:
 
 - **Docker**: Para configurar a aplicação para execução em contêineres Docker.
 
-  ## Como executar o projeto
+## Como executar o projeto
 
 <br/>
 
