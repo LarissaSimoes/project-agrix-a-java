@@ -5,7 +5,9 @@ import com.betrybe.agrix.models.entities.Crop;
 import com.betrybe.agrix.models.entities.Farm;
 import com.betrybe.agrix.models.repositories.CropRepository;
 import com.betrybe.agrix.models.repositories.FarmRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,23 @@ public class CropService {
       crop.setFarm(farm);
       Crop savedCrop = cropRepository.save(crop);
       return CropDto.fromCrop(savedCrop);
+    } else {
+      throw new RuntimeException("Fazenda não encontrada!");
+    }
+  }
+
+  /**
+   * This method gets all crops that belongs to one farm.
+   */
+  public List<CropDto> getCropsByFarmId(Integer farmId) {
+    Optional<Farm> farmOptional = farmService.findById(farmId);
+
+    if (farmOptional.isPresent()) {
+      Farm farm = farmOptional.get();
+      List<Crop> crops = cropRepository.findByFarmId(farmId);
+      return crops.stream()
+          .map(crop -> new CropDto(crop.getId(), crop.getName(), crop.getPlantedArea(), farmId))
+          .collect(Collectors.toList());
     } else {
       throw new RuntimeException("Fazenda não encontrada!");
     }

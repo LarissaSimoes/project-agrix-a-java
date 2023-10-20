@@ -69,6 +69,9 @@ public class FarmController {
     }
   }
 
+  /**
+   * This method creates a crop.
+   */
   @PostMapping("/{farmId}/crops")
   public ResponseEntity<Object> createCrop(@PathVariable("farmId") Integer farmId,
       @RequestBody CropDto cropDto) {
@@ -76,6 +79,20 @@ public class FarmController {
     try {
       savedCrop = cropService.createCrop(farmId, cropDto);
       return ResponseEntity.status(201).body(savedCrop);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(404).body(e.getMessage());
+    }
+  }
+
+  /**
+   * This method gets all crops that belongs to one farm.
+   */
+  @GetMapping("/{farmId}/crops")
+  public ResponseEntity<Object> getCropsByFarmId(@PathVariable("farmId") Integer farmId) {
+    List<CropDto> crops;
+    try {
+      crops = cropService.getCropsByFarmId(farmId);
+      return ResponseEntity.ok(crops);
     } catch (RuntimeException e) {
       return ResponseEntity.status(404).body(e.getMessage());
     }
