@@ -61,4 +61,16 @@ public class CropService {
       throw new RuntimeException("Fazenda não encontrada!");
     }
   }
+
+  /**
+   * This method gets all crops.
+   */
+  public List<CropDto> getAllCrops() {
+    List<Crop> crops = cropRepository.findAll();
+
+    return crops.stream()
+        .map(crop -> CropDto.fromCrop(crop))
+        .collect(Collectors.toList());
+
+  }
 }

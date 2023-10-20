@@ -3,6 +3,7 @@ package com.betrybe.agrix.controllers;
 import com.betrybe.agrix.dtos.CropDto;
 import com.betrybe.agrix.dtos.FarmDto;
 import com.betrybe.agrix.dtos.FarmResponseDto;
+import com.betrybe.agrix.models.entities.Crop;
 import com.betrybe.agrix.models.entities.Farm;
 import com.betrybe.agrix.services.CropService;
 import com.betrybe.agrix.services.FarmService;
@@ -97,4 +98,5 @@ public class FarmController {
       return ResponseEntity.status(404).body(e.getMessage());
     }
   }
+
 }
