@@ -1,11 +1,14 @@
 package com.betrybe.agrix.controllers;
 
+import com.betrybe.agrix.dtos.CropDto;
 import com.betrybe.agrix.dtos.FarmDto;
 import com.betrybe.agrix.dtos.FarmResponseDto;
 import com.betrybe.agrix.models.entities.Farm;
+import com.betrybe.agrix.services.CropService;
 import com.betrybe.agrix.services.FarmService;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +27,12 @@ public class FarmController {
 
   private final FarmService farmService;
 
-  public FarmController(FarmService farmService) {
+  @Autowired
+  private final CropService cropService;
+
+  public FarmController(FarmService farmService, CropService cropService) {
     this.farmService = farmService;
+    this.cropService = cropService;
   }
 
   /**
@@ -53,7 +60,7 @@ public class FarmController {
   public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
     Optional<Farm> farmOptional = farmService.findById(id);
     if (farmOptional.isPresent()) {
-      Farm farm = farmOptional.get();  // Obtém o objeto Farm do Optional
+      Farm farm = farmOptional.get();
       FarmResponseDto farmResponseDto = FarmResponseDto.fromFarm(farm);
       return ResponseEntity.ok(farmResponseDto);
     } else {
@@ -62,5 +69,15 @@ public class FarmController {
     }
   }
 
-
+  @PostMapping("/{farmId}/crops")
+  public ResponseEntity<Object> createCrop(@PathVariable("farmId") Integer farmId,
+      @RequestBody CropDto cropDto) {
+    CropDto savedCrop;
+    try {
+      savedCrop = cropService.createCrop(farmId, cropDto);
+      return ResponseEntity.status(201).body(savedCrop);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(404).body(e.getMessage());
+    }
+  }
 }
