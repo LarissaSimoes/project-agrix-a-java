@@ -71,6 +71,19 @@ public class CropService {
     return crops.stream()
         .map(crop -> CropDto.fromCrop(crop))
         .collect(Collectors.toList());
+  }
 
+  /**
+   * This method gets a crop by id.
+   */
+  public Optional<CropDto> findById(Integer id) {
+    Optional<Crop> cropOptional = cropRepository.findById(id);
+
+    if (cropOptional.isPresent()) {
+      Crop crop = cropOptional.get();
+      return Optional.of(CropDto.fromCrop(crop));
+    } else {
+      return Optional.empty();
+    }
   }
 }
